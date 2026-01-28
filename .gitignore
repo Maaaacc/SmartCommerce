@@ -1,0 +1,14 @@
+# .NET
+backend/**/bin/
+backend/**/obj/
+backend/**/*.user
+backend/**/*.suo
+
+# Node / React
+frontend/smartcommerce-ui/node_modules/
+frontend/smartcommerce-ui/build/
+frontend/smartcommerce-ui/.env
+
+# Misc
+*.log
+.DS_Store
