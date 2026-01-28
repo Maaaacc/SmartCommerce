@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SmartCommerce.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/SmartCommerce.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    SmartCommerce
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target=".navbar-collapse"
+                        aria-controls="navbarSupportedContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+
+                        <!-- Always visible -->
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Shop" asp-action="Index">
+                                Shop
+                            </a>
+                        </li>
+
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <!-- CUSTOMER LINKS -->
+                            @if (User.IsInRole(nameof(UserRole.Customer)))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Cart" asp-action="Index">
+                                        Cart
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- ADMIN LINKS -->
+                            @if (User.IsInRole(nameof(UserRole.Admin)))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-controller="Admin" asp-action="Index">
+                                        Admin Panel
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="nav-item">
+                                <span class="nav-link text-muted">
+                                    Welcome, @User.Identity.Name!
+                                </span>
+                            </li>
+
+                            <li class="nav-item">
+                                <form asp-controller="Account"
+                                      asp-action="Logout"
+                                      method="post"
+                                      class="form-inline">
+                                    <button type="submit" class="btn btn-link nav-link">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Login">
+                                    Login
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Account" asp-action="Register">
+                                    Register
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Toast container -->
+        <div aria-live="polite" aria-atomic="true" class="position-relative">
+            <div class="toast-container position-fixed end-0 p-3" style="top: 70px;">
+                @using SmartCommerce.Application.Common
+@using SmartCommerce.Domain.Enums
+                @{
+                    if (TempData["Notification"] != null)
+                    {
+                        var notification = System.Text.Json.JsonSerializer
+                        .Deserialize<Notification>(TempData["Notification"].ToString());
+
+                        string toastClass = notification.Type switch
+                        {
+                            NotificationType.Success => "bg-success text-white",
+                            NotificationType.Error => "bg-danger text-white",
+                            NotificationType.Warning => "bg-warning text-dark",
+                            NotificationType.Info => "bg-info text-dark",
+                            _ => "bg-info text-dark"
+                        };
+                        <div class="toast @toastClass fade show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="3000">
+                            <div class="d-flex">
+                                <div class="toast-body">
+                                    @notification.Message
+                                </div>
+                                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+
+
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2026 - SmartCommerce.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

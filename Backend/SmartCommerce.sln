@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34714.143
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartCommerce.Domain", "SmartCommerce.Domain\SmartCommerce.Domain.csproj", "{98418260-F9A1-4E1E-BBE1-16CCA3B91871}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartCommerce.Application", "SmartCommerce.Application\SmartCommerce.Application.csproj", "{B6FEAEC4-925A-419A-BF21-F280BBF77C49}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartCommerce.Infrastructure", "SmartCommerce.Infrastructure\SmartCommerce.Infrastructure.csproj", "{43F939D8-A850-45D0-AF55-65E4225D6B1D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartCommerce.API", "SmartCommerce.API\SmartCommerce.API.csproj", "{C9E099F1-9984-4745-80E3-3674812417AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartCommerce.Web", "SmartCommerce.Web\SmartCommerce.Web.csproj", "{8688795B-4498-49A2-B7A9-790216D289B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EB85486B-EAE4-4D3A-85A6-E2863677922D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartCommerce.Tests", "SmartCommerce.Tests\SmartCommerce.Tests.csproj", "{AA3A0DEF-DC40-4E01-AC10-8522AEDCB401}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{98418260-F9A1-4E1E-BBE1-16CCA3B91871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98418260-F9A1-4E1E-BBE1-16CCA3B91871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98418260-F9A1-4E1E-BBE1-16CCA3B91871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98418260-F9A1-4E1E-BBE1-16CCA3B91871}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6FEAEC4-925A-419A-BF21-F280BBF77C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6FEAEC4-925A-419A-BF21-F280BBF77C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6FEAEC4-925A-419A-BF21-F280BBF77C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6FEAEC4-925A-419A-BF21-F280BBF77C49}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43F939D8-A850-45D0-AF55-65E4225D6B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43F939D8-A850-45D0-AF55-65E4225D6B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43F939D8-A850-45D0-AF55-65E4225D6B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43F939D8-A850-45D0-AF55-65E4225D6B1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9E099F1-9984-4745-80E3-3674812417AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9E099F1-9984-4745-80E3-3674812417AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9E099F1-9984-4745-80E3-3674812417AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9E099F1-9984-4745-80E3-3674812417AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8688795B-4498-49A2-B7A9-790216D289B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8688795B-4498-49A2-B7A9-790216D289B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8688795B-4498-49A2-B7A9-790216D289B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8688795B-4498-49A2-B7A9-790216D289B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA3A0DEF-DC40-4E01-AC10-8522AEDCB401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA3A0DEF-DC40-4E01-AC10-8522AEDCB401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA3A0DEF-DC40-4E01-AC10-8522AEDCB401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA3A0DEF-DC40-4E01-AC10-8522AEDCB401}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47745557-2CBB-472C-9B81-1C9D413C4DFD}
+	EndGlobalSection
+EndGlobal
