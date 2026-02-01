@@ -14,5 +14,7 @@ namespace SmartCommerce.Domain.Entites
         public decimal Price { get; set; }
         public string ImageUrl { get; set; }
         public int Stock { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
     }
 }

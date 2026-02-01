@@ -12,3 +12,5 @@ frontend/smartcommerce-ui/.env
 # Misc
 *.log
 .DS_Store
+
+**/.vs/

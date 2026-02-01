@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace SmartCommerce.Domain.Entites
 {
-    public class ApplicationUser : IdentityUser
+    public class User 
     {
-        public string? FullName {  get; set; }
+        public int Id { get; set; }
+        public string Email { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
     }
 }

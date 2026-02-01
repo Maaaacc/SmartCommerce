@@ -19,9 +19,10 @@ namespace SmartCommerce.Application.Services
             _context = context;
         }
 
-        public async Task<IEnumerable<ProductDto>> GetAllAsync()
+        public async IAsyncEnumerable<ProductDto> GetAllAsync()
         {
-            return await _context.Products
+            var query = _context.Products
+                .Where(p => !p.IsDeleted)
                 .AsNoTracking()
                 .Select(p => new ProductDto
                 {
@@ -32,12 +33,21 @@ namespace SmartCommerce.Application.Services
                     ImageUrl = p.ImageUrl,
                     Stock = p.Stock
                 })
-                .ToListAsync();
+                .AsAsyncEnumerable();
+
+            await foreach (var product in query)
+            {
+                yield return product;
+            }
         }
+
 
         public async Task<ProductDto> GetByIdAsync(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Where(p => !p.IsDeleted && p.Id == id)
+                .FirstOrDefaultAsync();
+
             if (product == null) return null;
 
             return new ProductDto
@@ -89,7 +99,7 @@ namespace SmartCommerce.Application.Services
             var product = await _context.Products.FindAsync(id);
             if(product == null) return false;
 
-            _context.Products.Remove(product);
+            product.IsDeleted = true;
             await _context.SaveChangesAsync();
 
             return true;

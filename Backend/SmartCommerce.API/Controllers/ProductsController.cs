@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SmartCommerce.Application.DTOs;
 using SmartCommerce.Application.Interfaces;
 
 namespace SmartCommerce.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/products")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
         public ProductsController(IProductService productService)
@@ -17,7 +19,12 @@ namespace SmartCommerce.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var products = await _productService.GetAllAsync();
+            var products = new List<ProductDto>();
+
+            await foreach(var product in _productService.GetAllAsync())
+            {
+                products.Add(product);
+            }    
 
             return Ok(products);
         }

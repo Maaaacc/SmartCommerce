@@ -27,13 +27,16 @@ namespace SmartCommerce.Tests.ProductsControllerTest
         public async Task GetAll_ReturnsOkResult()
         {
             // Arrange
-            var products = new List<ProductDto>
-            {
-                new ProductDto { Id = 1, Name = "Test Product"}
-            };
+            var productsList = new List<ProductDto>
+    {
+        new ProductDto { Id = 1, Name = "Test Product" }
+    };
+
+            // Convert list to IAsyncEnumerable
+            var products = productsList.ToAsyncEnumerable();
 
             _mockService.Setup(s => s.GetAllAsync())
-                .ReturnsAsync(products);
+                .Returns(products);
 
             // Act
             var result = await _controller.GetAll();
@@ -41,6 +44,7 @@ namespace SmartCommerce.Tests.ProductsControllerTest
             // Assert
             Assert.IsType<OkObjectResult>(result);
         }
+
 
         [Fact]
         public async Task GetById_ReturnsOk_WhenProductExists()

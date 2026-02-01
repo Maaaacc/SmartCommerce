@@ -9,7 +9,7 @@ namespace SmartCommerce.Application.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<ProductDto>> GetAllAsync();
+        IAsyncEnumerable<ProductDto> GetAllAsync();
         Task<ProductDto> GetByIdAsync(int id);
         Task<ProductDto> CreateAsync(ProductDto product);
         Task<ProductDto> UpdateAsync(ProductDto product);
