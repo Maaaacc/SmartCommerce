@@ -4,11 +4,13 @@ import Home from "./pages/Home";
 import Products from "./pages/admin/ProductPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import { logout } from "./services/authService";
+import { logout, getRole } from "./services/authService";
 import { useState, useEffect } from "react";
+import ProtectedRoute from "./components/ProtectedRoutes";
 
 function NavBar({ isLoggedIn, setIsLoggedIn }) {
   const navigate = useNavigate();
+  const role = getRole();
 
   const handleLogout = () => {
     logout();
@@ -19,7 +21,12 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
   return (
     <nav style={{ marginBottom: "20px" }}>
       <Link to="/">Home</Link> | {" "}
-      <Link to="/products">Products</Link> | {" "}
+      
+      {role === "Admin" && (
+        <>
+          <Link to="/products">Products</Link> | {" "}
+        </>
+      )}
       {!isLoggedIn && (
         <>
           <Link to="/login">Login</Link> | {" "}
@@ -40,13 +47,14 @@ function App() {
       setIsLoggedIn(true);
     }
   }, []);
-  
+
   return (
     <Router>
       <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/products" element={<Products />} />
+        {/* Protected products route*/}
+        <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/register" element={<Register />} />
       </Routes>

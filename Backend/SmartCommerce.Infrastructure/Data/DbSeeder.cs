@@ -1,54 +1,36 @@
-﻿//using Microsoft.AspNetCore.Identity;
-//using Microsoft.Extensions.DependencyInjection;
-//using SmartCommerce.Domain.Entites;
-//using SmartCommerce.Domain.Enums;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartCommerce.Domain.Entities;
+using SmartCommerce.Domain.Enums;
+using SmartCommerce.Infrastructure.Data;
+using System.Threading.Tasks;
 
-//namespace SmartCommerce.Infrastructure.Data
-//{
-//    public static class DbSeeder
-//    {
-//        public static async Task SeedRolesAsync(IServiceProvider services)
-//        {
-//            var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-//            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+namespace SmartCommerce.Infrastructure.Data
+{
+    public static class DbSeeder
+    {
+        public static async Task SeedAdminAsync(AppDbContext context)
+        {
+            // Define admin credentials
+            var adminEmail = "admin@smartcommerce.com";
+            var adminPassword = "Admin@12345";
 
-//            string[] roles = { "Admin", "Customer" };
+            // Check if admin already exists
+            var adminUser = await context.Users
+                .FirstOrDefaultAsync(u => u.Email == adminEmail);
 
-//            foreach(var role in Enum.GetValues<UserRole>())
-//            {
-//                var roleName = role.ToString();
-//                if (!await roleManager.RoleExistsAsync(roleName))
-//                    await roleManager.CreateAsync(new IdentityRole(roleName));
-//            }
+            if (adminUser == null)
+            {
+                // Create admin user
+                adminUser = new User
+                {
+                    Email = adminEmail,
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword(adminPassword),
+                    Role = UserRole.Admin
+                };
 
-//            // Admin user
-
-//            var adminEmail = "admin@smartcommerce.com";
-//            var adminPassword = "Admin@12345";
-
-//            var adminUser = await userManager.FindByEmailAsync(adminEmail);
-
-//            if(adminUser == null)
-//            {
-//                adminUser = new ApplicationUser
-//                {
-//                    UserName = adminEmail,
-//                    Email = adminEmail,
-//                    EmailConfirmed = true
-//                };
-
-//                var result = await userManager.CreateAsync(adminUser, adminPassword);
-
-//                if(result.Succeeded)
-//                {
-//                    await userManager.AddToRoleAsync(adminUser, UserRole.Admin.ToString());
-//                }
-//            }
-//        }
-//    }
-//}
+                context.Users.Add(adminUser);
+                await context.SaveChangesAsync();
+            }
+        }
+    }
+}

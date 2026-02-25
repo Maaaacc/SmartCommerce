@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SmartCommerce.Application.Interfaces;
 using SmartCommerce.Application.Services;
-using SmartCommerce.Domain.Entites;
+using SmartCommerce.Domain.Entities;
 using SmartCommerce.Infrastructure.Data;
 using SmartCommerce.Web.Controllers;
 

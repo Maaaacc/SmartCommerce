@@ -4,7 +4,7 @@ using SmartCommerce.Application.Common;
 using SmartCommerce.Application.DTOs;
 using SmartCommerce.Application.Interfaces;
 using SmartCommerce.Application.Services;
-using SmartCommerce.Domain.Entites;
+using SmartCommerce.Domain.Entities;
 using System.Text.Json;
 
 namespace SmartCommerce.Web.Controllers

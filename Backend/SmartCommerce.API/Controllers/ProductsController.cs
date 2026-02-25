@@ -40,6 +40,7 @@ namespace SmartCommerce.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ProductDto dto)
         {
             var product = await _productService.CreateAsync(dto);
@@ -48,6 +49,7 @@ namespace SmartCommerce.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, ProductDto dto)
         {
             if (id != dto.Id) return BadRequest();
@@ -60,6 +62,7 @@ namespace SmartCommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var deleted = await _productService.DeleteAsync(id);

@@ -3,7 +3,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SmartCommerce.Application.DTOs;
 using SmartCommerce.Application.Interfaces;
-using SmartCommerce.Domain.Entites;
+using SmartCommerce.Domain.Entities;
+using SmartCommerce.Domain.Enums;
 using SmartCommerce.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,8 @@ namespace SmartCommerce.Application.Services
             var user = new User
             {
                 Email = dto.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+                Role = UserRole.Customer
             };
 
             _context.Users.Add(user);
@@ -56,10 +58,12 @@ namespace SmartCommerce.Application.Services
 
         private string GenerateJwt(User user)
         {
+            string roleName = user.Role.ToString();
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim("email", user.Email),
+                new Claim("role", roleName)
             };
 
             var key = new SymmetricSecurityKey(

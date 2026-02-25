@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartCommerce.Application.DTOs;
 using SmartCommerce.Application.Interfaces;
-using SmartCommerce.Domain.Entites;
+using SmartCommerce.Domain.Entities;
 using SmartCommerce.Infrastructure.Data;
 using System;
 using System.Collections.Generic;

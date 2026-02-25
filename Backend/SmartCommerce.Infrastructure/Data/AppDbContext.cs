@@ -1,6 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using SmartCommerce.Domain.Entites;
+using SmartCommerce.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +16,14 @@ namespace SmartCommerce.Infrastructure.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users {  get; set; }
 
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    modelBuilder.Entity<Product>()
-        //        .Property(p => p.Price)
-        //        .HasColumnType("decimal(18,2)"); 
-        //}
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+        }
 
     }
 }

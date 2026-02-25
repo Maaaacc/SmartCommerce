@@ -9,7 +9,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  CircularProgress
+  CircularProgress,
+  TextField
 } from "@mui/material";
 import {
   getProducts,
@@ -20,7 +21,6 @@ import {
 import ProductForm from "../../components/products/ProductForm";
 import ProductTable from "../../components/products/ProductTable";
 
-
 function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,6 +30,7 @@ function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     loadProducts();
@@ -103,8 +104,14 @@ function ProductsPage() {
     <Container sx={{ mt: 4 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">
-          Product Management (Admin)
+          Product Management
         </Typography>
+        <TextField
+          label="Search products..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          size="small">
+        </TextField>
         <Button
           variant="contained"
           onClick={handleCreate}
@@ -122,6 +129,8 @@ function ProductsPage() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         loading={loading}
+        searchTerm={searchTerm}
+        isAdmin={true}
       />
 
       <Dialog
@@ -137,35 +146,34 @@ function ProductsPage() {
           <ProductForm
             initialData={editingProduct || {}}
             onSubmit={handleFormSubmit}
-            onCancel={handleCloseModal}  // ✅ SINGLE Cancel source
+            onCancel={handleCloseModal}
             loading={formLoading}
           />
         </DialogContent>
       </Dialog>
 
-
-      <Dialog open={deleteDialogOpen}
+      <Dialog
+        open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         maxWidth="sm"
-        fullWidth>
+        fullWidth
+      >
         <DialogTitle>Delete Product</DialogTitle>
         <DialogContent>
           Are you sure you want to delete this product?
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialogOpen(false)}
-          >Cancel
-          </Button>
+          <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
           <Button
             onClick={confirmDelete}
             variant="contained"
             color="error"
-            autoFocus>
+            autoFocus
+          >
             Delete
           </Button>
         </DialogActions>
       </Dialog>
-
     </Container>
   );
 }
