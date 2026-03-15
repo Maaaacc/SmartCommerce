@@ -1,5 +1,6 @@
 import { loginRequest, registerRequest } from "../api/authApi";
 import { jwtDecode } from "jwt-decode";
+import { verifyToken } from "./verifyToken";
 
 export async function login(email, password) {
     const data = await loginRequest(email, password);
@@ -35,7 +36,7 @@ export function getRole() {
 }
 
 export function isAdmin() {
-    return getRole() === 1;
+    return getRole() === "Admin";
 }
 
 export function getEmail() {
@@ -49,5 +50,18 @@ export function getEmail() {
     } catch (err) {
         console.error("Invalid token", err);
         return null;
+    }
+}
+
+export async function verifyAuth() {
+    try {
+        const token = getToken();
+        if (!token) return false;
+
+        await verifyToken();
+        return true;
+    } catch (error) {
+        localStorage.removeItem("token");
+        return false;
     }
 }

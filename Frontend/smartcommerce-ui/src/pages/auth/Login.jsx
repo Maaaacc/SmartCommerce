@@ -31,8 +31,7 @@ function Login({ setIsLoggedIn }) {
 
         try {
             await login(email, password);
-            setIsLoggedIn(true);  // This already works!
-            navigate("/");  // Remove alert - cleaner UX
+            navigate("/"); // Just navigate - token verification handles rest
         } catch (err) {
             setError("Invalid email or password");
         } finally {

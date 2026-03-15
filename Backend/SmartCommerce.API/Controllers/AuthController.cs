@@ -34,5 +34,17 @@ namespace SmartCommerce.API.Controllers
 
             return Ok(new { token });
         }
+
+        [HttpGet("verify")]
+        public IActionResult VerifyToken()
+        {
+            return Ok(new
+            {
+                email = User.Identity?.Name,
+                role = User.FindFirst("role")?.Value,
+                isAdmin = User.FindFirst("role")?.Value == "Admin"
+            });
+        }
+
     }
 }

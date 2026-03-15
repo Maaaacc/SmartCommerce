@@ -1,7 +1,7 @@
+// Navbar.jsx - Replace the entire component with this fixed version
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, getRole, getToken } from "../../services/authService";
-
 
 import {
   AppBar,
@@ -15,7 +15,6 @@ import {
   Badge,
   Tooltip
 } from "@mui/material";
-
 import Divider from "@mui/material/Divider";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -79,59 +78,33 @@ const Navbar = ({ setIsLoggedIn }) => {
   const handleProfileMenuOpen = (event) => setProfileAnchor(event.currentTarget);
   const handleProfileMenuClose = () => setProfileAnchor(null);
 
-  // Logout function
   const handleLogout = () => {
     logout();
-    setIsLoggedIn(false);
+    if (setIsLoggedIn) setIsLoggedIn(false);
     handleProfileMenuClose();
     navigate("/login");
   };
 
-  // FIXED: No Fragments - Returns array directly
   const renderMobileMenuItems = () => {
     const items = [];
 
     navMenus.forEach((nav) => {
       if (nav.children) {
-        // Add submenu header
         items.push(
-          <MenuItem
-            key={`${nav.label}-header`}
-            disabled
-            sx={{
-              fontWeight: 'bold',
-              color: 'text.secondary',
-              justifyContent: 'center',
-              py: 1
-            }}
-          >
+          <MenuItem key={`${nav.label}-header`} disabled sx={{ fontWeight: 'bold', color: 'text.secondary', justifyContent: 'center', py: 1 }}>
             {nav.label}
           </MenuItem>
         );
-
-        // Add submenu children
         nav.children.forEach((child) => {
           items.push(
-            <MenuItem
-              key={child.label}
-              component={Link}
-              to={child.path}
-              onClick={handleMobileMenuClose}
-              sx={{ pl: 4 }}
-            >
+            <MenuItem key={child.label} component={Link} to={child.path} onClick={handleMobileMenuClose} sx={{ pl: 4 }}>
               {child.label}
             </MenuItem>
           );
         });
       } else {
-        // Add top-level item
         items.push(
-          <MenuItem
-            key={nav.label}
-            component={Link}
-            to={nav.path}
-            onClick={handleMobileMenuClose}
-          >
+          <MenuItem key={nav.label} component={Link} to={nav.path} onClick={handleMobileMenuClose}>
             {nav.label}
           </MenuItem>
         );
@@ -141,120 +114,139 @@ const Navbar = ({ setIsLoggedIn }) => {
     return items;
   };
 
-
+  const renderProfileMenu = () => (
+    <>
+      <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">
+        Profile
+      </MenuItem>
+      <Divider />
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    </>
+  );
 
   return (
     <AppBar position="static">
       <Toolbar>
-        {/* Mobile Hamburger */}
-        <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            aria-controls="mobile-menu"
-            aria-haspopup="true"
-            onClick={handleMobileMenuOpen}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Box>
+        {/* Mobile Hamburger - Only show if logged in */}
+        {loggedIn && (
+          <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              aria-controls="mobile-menu"
+              aria-haspopup="true"
+              onClick={handleMobileMenuOpen}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+        )}
 
         {/* Logo */}
         <Typography
           variant="h6"
           component={Link}
           to="/"
-          sx={{ textDecoration: "none", color: "inherit", mr: 2 }}
+          sx={{ textDecoration: "none", color: "inherit", mr: 2, flexGrow: loggedIn ? 0 : 1 }}
         >
           SmartCommerce
         </Typography>
 
-        {/* Desktop menus */}
-        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-          {navMenus.map((nav) =>
-            nav.children ? (
-              <Box key={nav.label}>
-                <Button
-                  color="inherit"
-                  onClick={(e) => handleMenuOpen(e, nav.label)}
-                >
-                  {nav.label} ▼
+        {/* Desktop Navigation Menus - Only show if logged in */}
+        {loggedIn && (
+          <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+            {navMenus.map((nav) =>
+              nav.children ? (
+                <Box key={nav.label}>
+                  <Button
+                    color="inherit"
+                    onClick={(e) => handleMenuOpen(e, nav.label)}
+                  >
+                    {nav.label} ▼
+                  </Button>
+                  <Menu
+                    anchorEl={menuAnchors[nav.label]}
+                    open={Boolean(menuAnchors[nav.label])}
+                    onClose={() => handleMenuClose(nav.label)}
+                  >
+                    {nav.children.map((child) => (
+                      <MenuItem
+                        key={child.label}
+                        component={Link}
+                        to={child.path}
+                        onClick={() => handleMenuClose(nav.label)}
+                      >
+                        {child.label}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Box>
+              ) : (
+                <Button key={nav.label} color="inherit" component={Link} to={nav.path}>
+                  {nav.label}
                 </Button>
-                <Menu
-                  anchorEl={menuAnchors[nav.label]}
-                  open={Boolean(menuAnchors[nav.label])}
-                  onClose={() => handleMenuClose(nav.label)}
-                >
-                  {nav.children.map((child) => (
-                    <MenuItem
-                      key={child.label}
-                      component={Link}
-                      to={child.path}
-                      onClick={() => handleMenuClose(nav.label)}
-                    >
-                      {child.label}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-            ) : (
-              <Button
-                key={nav.label}
-                color="inherit"
-                component={Link}
-                to={nav.path}
-              >
-                {nav.label}
-              </Button>
-            )
-          )}
-        </Box>
+              )
+            )}
+          </Box>
+        )}
 
         {/* Push right */}
         <Box sx={{ flexGrow: 1 }} />
 
-        {/* Notifications & Profile */}
+        {/* Right side - Conditional based on auth status */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="error">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-
-          <IconButton color="inherit" onClick={handleProfileMenuOpen}>
-            <AccountCircle />
-          </IconButton>
-
-          <Menu
-            anchorEl={profileAnchor}
-            open={Boolean(profileAnchor)}
-            onClose={handleProfileMenuClose}
-          >
-            <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">
-              Profile
-            </MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
-          </Menu>
+          {loggedIn ? (
+            <>
+              {/* Notifications & Profile - Only for logged in users */}
+              <IconButton color="inherit">
+                <Badge badgeContent={4} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton color="inherit" onClick={handleProfileMenuOpen}>
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                anchorEl={profileAnchor}
+                open={Boolean(profileAnchor)}
+                onClose={handleProfileMenuClose}
+              >
+                {renderProfileMenu()}
+              </Menu>
+            </>
+          ) : (
+            <>
+              {/* Auth buttons - Only for not logged in users */}
+              <Button color="inherit" component={Link} to="/login">
+                Sign In
+              </Button>
+              <Button color="inherit" component={Link} to="/register" sx={{ ml: 1 }}>
+                Register
+              </Button>
+            </>
+          )}
         </Box>
       </Toolbar>
-      {/* Mobile Menu */}
-      <Menu
-        id="mobile-menu"
-        anchorEl={mobileAnchor}
-        open={Boolean(mobileAnchor)}
-        onClose={handleMobileMenuClose}
-        TransitionComponent={null}
-        disablePortal
-        disableRestoreFocus
-        disableAutoFocusItem
-      // ... rest of props
-      >
-        {renderMobileMenuItems()}
-        <Divider />
-        {/* profile items */}
-      </Menu>
+
+      {/* Mobile Menu - Only for logged in users */}
+      {loggedIn && (
+        <Menu
+          id="mobile-menu"
+          anchorEl={mobileAnchor}
+          open={Boolean(mobileAnchor)}
+          onClose={handleMobileMenuClose}
+          TransitionComponent={null}
+          disablePortal
+          disableRestoreFocus
+          disableAutoFocusItem
+        >
+          {renderMobileMenuItems()}
+          <Divider />
+          {renderProfileMenu()}
+        </Menu>
+      )}
     </AppBar>
   );
 };
