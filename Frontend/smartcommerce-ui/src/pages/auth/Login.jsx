@@ -33,7 +33,7 @@ function Login({ setIsLoggedIn }) {
             await login(email, password);
             navigate("/"); // Just navigate - token verification handles rest
         } catch (err) {
-            setError("Invalid email or password");
+            setError(err.message);
         } finally {
             setLoading(false);
         }

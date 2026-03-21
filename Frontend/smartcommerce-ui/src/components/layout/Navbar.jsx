@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { logout, getRole, getToken } from "../../services/authService";
+import NavbarMenus from "./NavbarMenus";
 
 import {
   AppBar,
@@ -13,46 +14,12 @@ import {
   Menu,
   MenuItem,
   Badge,
-  Tooltip
 } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 
-const navMenus = [
-  { label: "Dashboard", path: "/dashboard" },
-  {
-    label: "Store",
-    children: [
-      { label: "Products", path: "/products" },
-      { label: "Categories", path: "/categories" },
-      { label: "Inventory", path: "/inventory" },
-    ],
-  },
-  {
-    label: "Sales",
-    children: [
-      { label: "Orders", path: "/orders" },
-      { label: "Customers", path: "/customers" },
-    ],
-  },
-  {
-    label: "Analytics",
-    children: [
-      { label: "Reports", path: "/reports" },
-      { label: "Revenue", path: "/revenue" },
-    ],
-  },
-  {
-    label: "Management",
-    children: [
-      { label: "Users", path: "/users" },
-      { label: "Roles", path: "/roles" },
-      { label: "Settings", path: "/settings" },
-    ],
-  },
-];
 
 const Navbar = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -88,7 +55,7 @@ const Navbar = ({ setIsLoggedIn }) => {
   const renderMobileMenuItems = () => {
     const items = [];
 
-    navMenus.forEach((nav) => {
+    NavbarMenus.forEach((nav) => {
       if (nav.children) {
         items.push(
           <MenuItem key={`${nav.label}-header`} disabled sx={{ fontWeight: 'bold', color: 'text.secondary', justifyContent: 'center', py: 1 }}>
@@ -114,15 +81,15 @@ const Navbar = ({ setIsLoggedIn }) => {
     return items;
   };
 
-  const renderProfileMenu = () => (
-    <>
-      <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">
-        Profile
-      </MenuItem>
-      <Divider />
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
-    </>
-  );
+  const renderProfileMenu = () => [
+    <MenuItem key="profile" onClick={handleProfileMenuClose} component={Link} to="/profile">
+      Profile
+    </MenuItem>,
+    <Divider key="divider" />,
+    <MenuItem key="logout" onClick={handleLogout}>
+      Logout
+    </MenuItem>
+  ];
 
   return (
     <AppBar position="static">
@@ -157,7 +124,7 @@ const Navbar = ({ setIsLoggedIn }) => {
         {/* Desktop Navigation Menus - Only show if logged in */}
         {loggedIn && (
           <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-            {navMenus.map((nav) =>
+            {NavbarMenus.map((nav) =>
               nav.children ? (
                 <Box key={nav.label}>
                   <Button

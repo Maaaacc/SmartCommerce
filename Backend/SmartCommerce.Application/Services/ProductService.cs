@@ -82,7 +82,8 @@ namespace SmartCommerce.Application.Services
         public async Task<ProductDto> UpdateAsync(ProductDto dto)
         {
             var product = await _context.Products.FindAsync(dto.Id);
-            if (product == null) return null;
+            if (product == null)
+                throw new Exception("Product not found");
 
             product.Name = dto.Name;
             product.Description = dto.Description;

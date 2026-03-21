@@ -15,6 +15,9 @@ namespace SmartCommerce.Domain.Entities
         public string ImageUrl { get; set; }
         public int Stock { get; set; }
 
+        public int? CategoryId {  get; set; }
+        public Category? Category {  get; set; }
+
         public bool IsDeleted { get; set; } = false;
     }
 }

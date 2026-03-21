@@ -2,7 +2,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Home from "./pages/Home";
-import Products from "./pages/admin/ProductPage";
+import ProductPage from "./pages/admin/ProductPage";
+import CategoryPage from "./pages/admin/CategoryPage";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Navbar from "./components/layout/Navbar"; // Fixed path
@@ -14,12 +15,11 @@ function App() {
       <Navbar /> {/* Removed isLoggedIn prop - Navbar handles it internally */}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+        <Route path="/products" element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
         <Route path="/orders" element={<ProtectedRoute><div>Orders Page</div></ProtectedRoute>} />
         <Route path="/customers" element={<ProtectedRoute><div>Customers Page</div></ProtectedRoute>} />
         <Route path="/reports" element={<ProtectedRoute><div>Reports Page</div></ProtectedRoute>} />
-        <Route path="/categories" element={<ProtectedRoute><div>Categories Page</div></ProtectedRoute>} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/categories" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
