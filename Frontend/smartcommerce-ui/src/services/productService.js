@@ -6,6 +6,8 @@ import {
     removeProduct
 } from "../api/productApi";
 
+import { getActiveCategories } from "./categoryService";
+
 
 export async function getProducts() {
     const response = await fetchProducts();
@@ -29,4 +31,8 @@ export async function updateProduct(id, product) {
 
 export async function deleteProduct(id) {
     await removeProduct(id);
+}
+
+export async function getActiveCategoriesForProduct() {
+    return await getActiveCategories();
 }

@@ -22,6 +22,7 @@ namespace SmartCommerce.Application.Services
         public async IAsyncEnumerable<ProductDto> GetAllAsync()
         {
             var query = _context.Products
+                .Include(p => p.Category)
                 .Where(p => !p.IsDeleted)
                 .AsNoTracking()
                 .Select(p => new ProductDto
@@ -31,7 +32,8 @@ namespace SmartCommerce.Application.Services
                     Description = p.Description,
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
-                    Stock = p.Stock
+                    Stock = p.Stock,
+                    CategoryId = p.CategoryId,
                 })
                 .AsAsyncEnumerable();
 
@@ -57,6 +59,7 @@ namespace SmartCommerce.Application.Services
                 Description = product.Description,
                 Price = product.Price,
                 ImageUrl = product.ImageUrl,
+                CategoryId = product.CategoryId,
                 Stock = product.Stock
             };
         }
@@ -69,7 +72,8 @@ namespace SmartCommerce.Application.Services
                 Description = dto.Description,
                 Price = dto.Price,
                 ImageUrl = dto.ImageUrl,
-                Stock = dto.Stock
+                Stock = dto.Stock,
+                CategoryId = dto.CategoryId,
             };
 
             _context.Products.Add(product);
@@ -89,6 +93,7 @@ namespace SmartCommerce.Application.Services
             product.Description = dto.Description;
             product.Price = dto.Price;
             product.ImageUrl = dto.ImageUrl;
+            product.CategoryId = dto.CategoryId;
             product.Stock = dto.Stock;
 
             await _context.SaveChangesAsync();

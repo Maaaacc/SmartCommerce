@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
     TextField,
     Button,
@@ -6,8 +6,15 @@ import {
     Paper,
     Typography,
     Alert,
-    CircularProgress
+    CircularProgress,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Avatar
 } from "@mui/material";
+
+import { getActiveCategoriesForProduct } from "../../services/productService";
 
 function ProductForm({ initialData = {}, onSubmit, onCancel, loading }) {
     const [name, setName] = useState(initialData.name || "");
@@ -15,7 +22,14 @@ function ProductForm({ initialData = {}, onSubmit, onCancel, loading }) {
     const [price, setPrice] = useState(initialData.price || "");
     const [stock, setStock] = useState(initialData.stock || "");
     const [imageUrl, setImageUrl] = useState(initialData.imageUrl || "");
+    const [categories, setCategories] = useState([]);
+    const [categoryId, setCategoryId] = useState(initialData.categoryId || "");
+    const [imageFile, setImageFile] = useState(null);
+    const [uploadedImageUrl, setUploadedImageUrl] = useState(initialData.imageUrl || "");
+    const fileInputRef = useRef(null);
     const [error, setError] = useState("");
+    const [uploading, setUploading] = useState(false);
+
 
     useEffect(() => {
         setName(initialData.name || "");
@@ -23,13 +37,26 @@ function ProductForm({ initialData = {}, onSubmit, onCancel, loading }) {
         setPrice(initialData.price || "");
         setStock(initialData.stock || "");
         setImageUrl(initialData.imageUrl || "");
+        setUploadedImageUrl(initialData.imageUrl || "");
+        setCategoryId(initialData.categoryId || "");
     }, [initialData]);
+
+    useEffect(() => {
+        getActiveCategoriesForProduct()
+            .then(setCategories)
+            .catch(() => setError("Failed to load categories"));
+    }, []);
 
     function handleSubmit(e) {
         e.preventDefault();
+        console.log("Sending categoryId:", categoryId, typeof categoryId);
 
         if (!name || !description || !price || !stock) {
             setError("Please fill in all required fields");
+            return;
+        }
+        if (!categoryId) {
+            setError("Please select a category");
             return;
         }
 
@@ -40,7 +67,8 @@ function ProductForm({ initialData = {}, onSubmit, onCancel, loading }) {
             description,
             price: parseFloat(price),
             stock: parseFloat(stock),
-            imageUrl
+            imageUrl: uploadedImageUrl,
+            categoryId: categoryId ? parseInt(categoryId) : null
         });
     }
 
@@ -50,9 +78,47 @@ function ProductForm({ initialData = {}, onSubmit, onCancel, loading }) {
         setPrice("");
         setStock("");
         setImageUrl("");
+        setUploadedImageUrl("");
+        setCategoryId("");
+        setImageFile(null);
         setError("");
 
+        if (fileInputRef.current) fileInputRef.current.value = "";
+
         if (onCancel) onCancel();
+    }
+
+    const handleImageUpload = async (imageFile) => {
+        if (!imageFile)
+            return;
+
+        const formData = new FormData();
+        formData.append("file", imageFile);
+
+        setUploading(true);
+        try {
+            const response = await fetch('https://localhost:7250/api/products/upload-image', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                setUploadedImageUrl(result.imageUrl);
+                setImageFile(null);
+                fileInputRef.current.value = "";
+                setError("Image uploaded successfully");
+
+                setTimeout(() => setError(""), 3000);
+            }
+        } catch (err) {
+            setError("Failed to upload image");
+        } finally {
+            setUploading(false);
+        }
     }
 
     return (
@@ -110,13 +176,67 @@ function ProductForm({ initialData = {}, onSubmit, onCancel, loading }) {
                     sx={{ mb: 2 }}
                 />
 
-                <TextField
-                    label="Image URL"
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    fullWidth
-                    sx={{ mb: 2 }}
-                />
+                <Box sx={{ mb: 2 }}>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                                setImageFile(file);
+                                await handleImageUpload(file);
+                            }
+                        }}
+                        style={{ display: 'none' }}
+                    />
+                    <Button
+                        variant="outlined"
+                        component="span"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploading}
+                        startIcon={uploading ? <CircularProgress size={20} /> : null}
+                        sx={{ mb: 1 }}
+                    >
+                        {uploading ? "Uploading..." : "Choose Image"}
+                    </Button>
+                </Box>
+
+                {/* Preview */}
+                {uploadedImageUrl && (
+                    <Box sx={{ mb: 2 }}>
+                        <Typography variant="caption">Product Image:</Typography>
+                        <Avatar
+                            src={`https://localhost:7250${uploadedImageUrl}`}
+                            sx={{ width: 80, height: 80, ml: 1 }}
+                        />
+                        <TextField
+                            label="Image URL"
+                            value={uploadedImageUrl}
+                            fullWidth
+                            sx={{ mt: 1 }}
+                            InputProps={{ readOnly: true }}
+                        />
+                    </Box>
+                )}
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel>Category</InputLabel>
+                    <Select
+                        value={categoryId}
+                        onChange={(e) => setCategoryId(e.target.value)}
+                        label="Category"
+                    >
+                        <MenuItem value="">
+                            <em>No Category</em>
+                        </MenuItem>
+
+                        {categories.map((category) => (
+                            <MenuItem key={category.id} value={category.id}>
+                                {category.name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
                 <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                     <Button
                         type="submit"

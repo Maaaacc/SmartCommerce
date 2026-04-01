@@ -16,13 +16,15 @@ import {
   getProducts,
   createProduct,
   deleteProduct,
-  updateProduct
+  updateProduct,
+  getActiveCategoriesForProduct
 } from "../../services/productService";
 import ProductForm from "../../components/products/ProductForm";
 import ProductTable from "../../components/products/ProductTable";
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [error, setError] = useState("");
@@ -34,6 +36,8 @@ function ProductsPage() {
 
   useEffect(() => {
     loadProducts();
+
+    getActiveCategoriesForProduct().then(setCategories);
   }, []);
 
   async function loadProducts() {
@@ -51,6 +55,7 @@ function ProductsPage() {
 
   async function handleFormSubmit(product) {
     try {
+
       setFormLoading(true);
       if (product.id) {
         await updateProduct(product.id, product);
@@ -126,6 +131,7 @@ function ProductsPage() {
 
       <ProductTable
         products={products}
+        categories={categories}
         onEdit={handleEdit}
         onDelete={handleDelete}
         loading={loading}

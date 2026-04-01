@@ -71,5 +71,33 @@ namespace SmartCommerce.API.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("upload-image")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UploadImage(IFormFile file)
+        {
+            if(file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+            if (!file.ContentType.StartsWith("image/"))
+                return BadRequest("Only image files allowed");
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(),
+                "wwwroot/uploads/products");
+
+            if(!Directory.Exists(uploadsPath))
+                Directory.CreateDirectory(uploadsPath);
+
+            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsPath, fileName);
+
+            using(var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            var imageUrl = $"/uploads/products/{fileName}";
+            return Ok(new { imageUrl });
+
+        }
     }
 }
