@@ -1,11 +1,5 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SmartCommerce.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SmartCommerce.Infrastructure.Data
 {
@@ -14,32 +8,43 @@ namespace SmartCommerce.Infrastructure.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
-        public DbSet<User> Users {  get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            var product = modelBuilder.Entity<Product>();
-            product.Property(p => p.Price)
-                   .HasColumnType("decimal(18,2)");
+            // Product Configuration
+            modelBuilder.Entity<Product>(product =>
+            {
+                product.Property(p => p.Price)
+                       .HasColumnType("decimal(18,2)");
 
-            var category = modelBuilder.Entity<Category>();
-            category.Property(c => c.Name)
-                    .IsRequired()
-                    .HasMaxLength(100);
+                product.HasOne(p => p.Category)
+                       .WithMany(c => c.Products)
+                       .HasForeignKey(p => p.CategoryId)
+                       .OnDelete(DeleteBehavior.SetNull);
+            });
 
-            category.Property(c => c.Description)
-                    .HasMaxLength(500);
+            // Category Configuration
+            modelBuilder.Entity<Category>(category =>
+            {
+                category.Property(c => c.Name)
+                        .IsRequired()
+                        .HasMaxLength(100);
 
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany(c => c.Products)
-                .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.SetNull);
-            
+                category.Property(c => c.Description)
+                        .HasMaxLength(500);
+
+                // Self-referencing (Parent-Child)
+                category.HasOne(c => c.Parent)
+                        .WithMany(c => c.Children)
+                        .HasForeignKey(c => c.ParentId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                category.HasIndex(c => c.ParentId);
+            });
         }
-
     }
 }

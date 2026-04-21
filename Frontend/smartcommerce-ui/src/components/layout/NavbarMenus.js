@@ -1,24 +1,24 @@
-const NavbarMenus = [
-  { label: "Dashboard", path: "/dashboard" },
+export const adminMenus = [
+  { label: "Dashboard", path: "/admin" },
   {
     label: "Store",
     children: [
-      { label: "Products", path: "/products" },
-      { label: "Categories", path: "/categories" },
+      { label: "Products (Admin)", path: "/admin/products" },
+      { label: "Categories (Admin)", path: "/admin/categories" },
       { label: "Inventory", path: "/inventory" },
     ],
   },
   {
     label: "Sales",
     children: [
-      { label: "Orders", path: "/orders" },
-      { label: "Customers", path: "/customers" },
+      { label: "Orders (Admin)", path: "/admin/orders" },
+      { label: "Customers (Admin)", path: "/admin/customers" },
     ],
   },
   {
     label: "Analytics",
     children: [
-      { label: "Reports", path: "/reports" },
+      { label: "Reports (Admin)", path: "/admin/reports" },
       { label: "Revenue", path: "/revenue" },
     ],
   },
@@ -32,4 +32,14 @@ const NavbarMenus = [
   },
 ];
 
-export default NavbarMenus;
+export const userMenus = [
+  {
+    label: "Profile", path: "/profile",
+  }
+];
+
+export const publicMenus = [
+  {
+    label: "Products", path: "/products",
+  },
+];

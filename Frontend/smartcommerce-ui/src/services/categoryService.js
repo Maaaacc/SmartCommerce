@@ -28,12 +28,16 @@ export async function getCategoryById(id) {
 
 // Create category
 export async function createCategory(category) {
+    console.log("createCategory dto:", category);
+
     const response = await postCategory(category);
     return response.data;
 }
 
 // Update category
 export async function updateCategory(id, category) {
+    console.log("updateCategory dto:", category);
+
     const response = await putCategory(id, category);
     return response.data;
 }

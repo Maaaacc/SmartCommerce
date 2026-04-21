@@ -3,11 +3,12 @@ import {
     fetchProductById,
     postProduct,
     putProduct,
-    removeProduct
+    removeProduct,
+    fetchDeletedProducts,   // ✅ NEW
+    patchRestoreProduct,    // ✅ NEW
 } from "../api/productApi";
 
 import { getActiveCategories } from "./categoryService";
-
 
 export async function getProducts() {
     const response = await fetchProducts();
@@ -35,4 +36,13 @@ export async function deleteProduct(id) {
 
 export async function getActiveCategoriesForProduct() {
     return await getActiveCategories();
+}
+
+export async function getDeletedProducts() {
+    const response = await fetchDeletedProducts();
+    return response.data;
+}
+
+export async function restoreProduct(id) {
+    await patchRestoreProduct(id);
 }

@@ -39,6 +39,10 @@ export function isAdmin() {
     return getRole() === "Admin";
 }
 
+export function isLoggedIn() {
+    return !!getToken();
+}
+
 export function getEmail() {
     const token = getToken();
     if (!token) return null;

@@ -43,3 +43,11 @@ export async function removeProduct(id) {
         headers: getAuthHeader()
     });
 }
+
+export async function fetchDeletedProducts() {
+    return axios.get(`${API_URL}/deleted`, { headers: getAuthHeader() });
+}
+
+export async function patchRestoreProduct(id) {
+    return axios.patch(`${API_URL}/${id}/restore`, null, { headers: getAuthHeader() });
+}

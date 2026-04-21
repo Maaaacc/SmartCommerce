@@ -24,7 +24,8 @@ namespace SmartCommerce.Application.Services
                     Id = c.Id,
                     Name = c.Name,
                     Description = c.Description,
-                    IsDeleted = c.IsDeleted
+                    IsDeleted = c.IsDeleted,
+                    ParentId = c.ParentId
                 })
                 .AsAsyncEnumerable();
 
@@ -45,7 +46,8 @@ namespace SmartCommerce.Application.Services
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                IsDeleted = c.IsDeleted
+                IsDeleted = c.IsDeleted,
+                ParentId = c.ParentId
             }).AsAsyncEnumerable();
 
             await foreach (var category in result)
@@ -65,7 +67,8 @@ namespace SmartCommerce.Application.Services
                 Id = c.Id,
                 Name = c.Name,
                 Description = c.Description,
-                IsDeleted = c.IsDeleted
+                IsDeleted = c.IsDeleted,
+                ParentId = c.ParentId
             }).AsAsyncEnumerable();
 
             await foreach (var category in result)
@@ -85,16 +88,28 @@ namespace SmartCommerce.Application.Services
             {
                 Id = category.Id,
                 Name = category.Name,
-                Description = category.Description
+                Description = category.Description,
+                ParentId = category.ParentId
             };
         }
 
         public async Task<CategoryDto> CreateAsync(CategoryDto dto)
         {
+            if (dto.ParentId.HasValue)
+            {
+                var parent = await _context.Categories.FindAsync(dto.ParentId.Value);
+                if(parent == null)
+                {
+                    throw new ArgumentException("Parent category not found.");
+                }
+            }
+            
             var category = new Category
             {
                 Name = dto.Name,
-                Description = dto.Description
+                Description = dto.Description,
+                ParentId = dto.ParentId,
+                IsDeleted = false
             };
 
             _context.Categories.Add(category);
@@ -106,15 +121,33 @@ namespace SmartCommerce.Application.Services
 
         public async Task<CategoryDto> UpdateAsync(CategoryDto dto)
         {
-            var category = await _context.Categories.FindAsync(dto.Id);
+            Console.WriteLine($"UpdateAsync: id={dto.Id}, parent_id={dto.ParentId}");
 
+            var category = await _context.Categories.FindAsync(dto.Id);
             if (category == null)
                 throw new Exception("Category not found");
 
+            if (dto.ParentId.HasValue)
+            {
+                var parent = await _context.Categories.FindAsync(dto.ParentId.Value);
+                if (parent == null)
+                    throw new ArgumentException("Parent category not found.");
+            }
+
+            // Log current state
+            Console.WriteLine($"Before update: ParentId = {category.ParentId}");
+
             category.Name = dto.Name;
             category.Description = dto.Description;
+            category.ParentId = dto.ParentId;
+
+            // Log right before Save
+            Console.WriteLine($"Before SaveChanges: ParentId = {category.ParentId}");
 
             await _context.SaveChangesAsync();
+
+            // Log after Save
+            Console.WriteLine($"After SaveChanges: ParentId = {category.ParentId}");
 
             return dto;
         }

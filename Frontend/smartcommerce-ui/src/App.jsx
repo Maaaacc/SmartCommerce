@@ -1,27 +1,95 @@
-// app.jsx - Updated version
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+// Pages
 import Home from "./pages/Home";
-import ProductPage from "./pages/admin/ProductPage";
-import CategoryPage from "./pages/admin/CategoryPage";
+import ProductList from "./pages/ProductList";
+import ProductDetail from "./pages/ProductDetail";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
-import Navbar from "./components/layout/Navbar"; // Fixed path
-import ProtectedRoute from "./components/ProtectedRoutes"; // Fixed path
+import ProductPage from "./pages/admin/ProductPage";
+import CategoryPage from "./pages/admin/CategoryPage";
+
+// Layout & guards
+import Navbar from "./components/layout/Navbar";
+import RequireAuth from "./guards/RequireAuth";
+import AdminProtectedRoute from "./guards/AdminProtectedRoute";
+
+import "./App.css";
+// Themes & styles
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "./theme";
 
 function App() {
   return (
     <Router>
-      <Navbar /> {/* Removed isLoggedIn prop - Navbar handles it internally */}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/products" element={<ProtectedRoute><ProductPage /></ProtectedRoute>} />
-        <Route path="/orders" element={<ProtectedRoute><div>Orders Page</div></ProtectedRoute>} />
-        <Route path="/customers" element={<ProtectedRoute><div>Customers Page</div></ProtectedRoute>} />
-        <Route path="/reports" element={<ProtectedRoute><div>Reports Page</div></ProtectedRoute>} />
-        <Route path="/categories" element={<ProtectedRoute><CategoryPage /></ProtectedRoute>} />        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+      <ThemeProvider theme={theme}>
+
+        <Navbar />
+
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ProductList />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Admin-only routes */}
+          <Route
+            path="/admin/products"
+            element={
+              <RequireAuth>
+                <AdminProtectedRoute>
+                  <ProductPage />
+                </AdminProtectedRoute>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/categories"
+            element={
+              <RequireAuth>
+                <AdminProtectedRoute>
+                  <CategoryPage />
+                </AdminProtectedRoute>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <RequireAuth>
+                <AdminProtectedRoute>
+                  <div>Orders (Admin)</div>
+                </AdminProtectedRoute>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/customers"
+            element={
+              <RequireAuth>
+                <AdminProtectedRoute>
+                  <div>Customers (Admin)</div>
+                </AdminProtectedRoute>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/reports"
+            element={
+              <RequireAuth>
+                <AdminProtectedRoute>
+                  <div>Reports (Admin)</div>
+                </AdminProtectedRoute>
+              </RequireAuth>
+            }
+          />
+
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </ThemeProvider>
     </Router>
   );
 }

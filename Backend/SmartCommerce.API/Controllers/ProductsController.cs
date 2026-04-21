@@ -16,6 +16,13 @@ namespace SmartCommerce.API.Controllers
             _productService = productService;
         }
 
+        [HttpGet("deleted")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetDeleted()
+        {
+            var products = await _productService.GetDeletedAsync();
+            return Ok(products);
+        }
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -72,32 +79,66 @@ namespace SmartCommerce.API.Controllers
             return NoContent();
         }
 
+        [HttpPatch("{id}/restore")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            try
+            {
+                await _productService.RestoreAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
         [HttpPost("upload-image")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage([FromForm] IFormFile file,[FromForm] string oldImageUrl = null)
         {
-            if(file == null || file.Length == 0)
+            if (file == null || file.Length == 0)
                 return BadRequest("No file uploaded");
+
             if (!file.ContentType.StartsWith("image/"))
                 return BadRequest("Only image files allowed");
 
-            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(),
-                "wwwroot/uploads/products");
+            var uploadsPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/uploads/products"
+            );
 
-            if(!Directory.Exists(uploadsPath))
+            if (!Directory.Exists(uploadsPath))
                 Directory.CreateDirectory(uploadsPath);
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsPath, fileName);
+            var newFileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            var filePath = Path.Combine(uploadsPath, newFileName);
 
-            using(var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            var imageUrl = $"/uploads/products/{fileName}";
-            return Ok(new { imageUrl });
+            if (!string.IsNullOrEmpty(oldImageUrl))
+            {
+                var oldFileName = Path.GetFileName(oldImageUrl);
 
+                var oldFilePath = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "wwwroot/uploads/products",
+                    oldFileName
+                );
+
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                    Console.WriteLine($"Deleted old image: {oldFilePath}");
+                }
+            }
+
+            var imageUrl = $"/uploads/products/{newFileName}";
+            return Ok(new { imageUrl });
         }
     }
 }

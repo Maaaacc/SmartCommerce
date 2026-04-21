@@ -57,7 +57,7 @@ namespace SmartCommerce.API.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CategoryDto dto)
         {
             var category = await _categoryService.CreateAsync(dto);
@@ -65,7 +65,7 @@ namespace SmartCommerce.API.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] CategoryDto dto)
         {
             dto.Id = id;
@@ -75,7 +75,7 @@ namespace SmartCommerce.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _categoryService.DeleteAsync(id);
