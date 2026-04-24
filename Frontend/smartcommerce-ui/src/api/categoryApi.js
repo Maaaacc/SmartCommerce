@@ -9,6 +9,14 @@ function getAuthHeader() {
     };
 }
 
+// Get ALL categories
+
+export async function fetchCategories(){
+    return axios.get(`${API_URL}`,{
+        headers: getAuthHeader()
+    });
+}
+
 // Get ACTIVE categories
 export async function fetchActiveCategories() {
     return axios.get(`${API_URL}/active`, {

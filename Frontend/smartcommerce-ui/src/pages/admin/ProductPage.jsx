@@ -20,11 +20,11 @@ import {
 import { Add, Refresh } from "@mui/icons-material";
 import {
   getProducts,
-  getDeletedProducts,      // ✅ NEW
+  getDeletedProducts,      
   createProduct,
   deleteProduct,
   updateProduct,
-  restoreProduct,          // ✅ NEW
+  restoreProduct,          
   getActiveCategoriesForProduct,
 } from "../../services/productService";
 import ProductForm from "../../components/admin/ProductForm";
@@ -49,7 +49,7 @@ const btnBaseSx = {
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
-  const [deletedProducts, setDeletedProducts] = useState([]);   // ✅ NEW
+  const [deletedProducts, setDeletedProducts] = useState([]);   
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
@@ -59,7 +59,7 @@ function ProductsPage() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [showDeleted, setShowDeleted] = useState(false);        // ✅ NEW
+  const [showDeleted, setShowDeleted] = useState(false);        
 
   useEffect(() => {
     loadProducts();
@@ -69,7 +69,7 @@ function ProductsPage() {
   async function loadProducts() {
     try {
       setLoading(true);
-      const [activeData, deletedData] = await Promise.all([   // ✅ NEW
+      const [activeData, deletedData] = await Promise.all([   
         getProducts(),
         getDeletedProducts(),
       ]);
@@ -120,7 +120,6 @@ function ProductsPage() {
     }
   }
 
-  // ✅ NEW
   async function handleRestore(id) {
     if (!window.confirm("Restore this product?")) return;
     try {
@@ -147,7 +146,7 @@ function ProductsPage() {
     setEditingProduct(null);
   }
 
-  const currentList = showDeleted ? deletedProducts : products;  // ✅ NEW
+  const currentList = showDeleted ? deletedProducts : products;  
 
   return (
     <Container maxWidth={false} sx={{ mt: 4, pb: 6, maxWidth: "1260px" }}>
@@ -207,7 +206,7 @@ function ProductsPage() {
         }}
       >
         <Box sx={{ display: "flex", gap: 1.5, alignItems: "center" }}>
-          {/* ✅ Hide "Create Product" when viewing deleted */}
+          {/* Hide "Create Product" when viewing deleted */}
           {!showDeleted && (
             <Button
               variant="contained"
@@ -264,7 +263,6 @@ function ProductsPage() {
             }}
           />
 
-          {/* ✅ NEW — mirrors CategoryPage exactly */}
           <Chip
             label={showDeleted ? "Show Active" : "Show Deleted"}
             onClick={() => setShowDeleted((p) => !p)}
@@ -292,14 +290,14 @@ function ProductsPage() {
         categories={categories}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        onRestore={handleRestore}    // ✅ NEW
+        onRestore={handleRestore}   
         loading={loading}
         searchTerm={searchTerm}
         isAdmin={true}
-        showDeleted={showDeleted}    // ✅ NEW — table uses this to swap Edit/Delete for Restore
+        showDeleted={showDeleted}    
       />
 
-      {/* Create / Edit Dialog — unchanged */}
+      {/* Create / Edit Dialog */}
       <Dialog
         open={openModal}
         onClose={handleCloseModal}
@@ -330,7 +328,7 @@ function ProductsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog — unchanged */}
+      {/* Delete Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}

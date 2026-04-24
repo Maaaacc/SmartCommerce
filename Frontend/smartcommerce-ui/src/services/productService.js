@@ -4,8 +4,8 @@ import {
     postProduct,
     putProduct,
     removeProduct,
-    fetchDeletedProducts,   // ✅ NEW
-    patchRestoreProduct,    // ✅ NEW
+    fetchDeletedProducts,   
+    patchRestoreProduct,    
 } from "../api/productApi";
 
 import { getActiveCategories } from "./categoryService";

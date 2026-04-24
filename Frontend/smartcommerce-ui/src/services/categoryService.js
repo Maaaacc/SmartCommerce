@@ -1,4 +1,5 @@
 import {
+    fetchCategories,
     fetchActiveCategories,
     fetchDeletedCategories,
     fetchCategoryById,
@@ -7,6 +8,12 @@ import {
     removeCategory,
     restoreCategoryApi
 } from "../api/categoryApi";
+
+// Get ALL categories
+export async function getCategories(){
+    const response = await fetchCategories();
+    return response.data;
+}
 
 // Get ACTIVE categories
 export async function getActiveCategories() {
