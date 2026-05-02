@@ -10,6 +10,7 @@ namespace SmartCommerce.Infrastructure.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Practice> Practices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -48,3 +49,4 @@ namespace SmartCommerce.Infrastructure.Data
         }
     }
 }
+
