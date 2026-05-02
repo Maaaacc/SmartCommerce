@@ -80,7 +80,7 @@ function CategoryForm({ initialData = {}, onSubmit, onCancel, loading, categorie
 
         setError("");
 
-        // ✅ Clean payload for backend
+        // ✅ Clean payload for what
         const payload = {
             id: initialData.id,
             name: formData.name.trim(),
@@ -112,7 +112,7 @@ function CategoryForm({ initialData = {}, onSubmit, onCancel, loading, categorie
                         "& .MuiOutlinedInput-root": {
                             ...fieldSx["& .MuiOutlinedInput-root"],
                             backgroundColor: COLORS.bgPage,
-                            color: COLORS.textSecondary,
+                            color: COLORS.success,
                         },
                     }}
                 />
